@@ -1,116 +1,132 @@
-// mechetenco
-// rock-paper-scissors-game logic
+// main.js
 
-// function to get computer choice
-function getComputerChoice() {
-    let choice = "No Choice";
-    // generating random number between 0-2
-    let number = Math.floor(Math.random() * (2 - 0 + 1) + 0)
-    // if statements to assign numbers to a choice
-    if (number === 0) {
-        choice = "rock";
-        console.log("Computer Played "+ choice +".")
-        return choice;
-    }
-    else if (number === 1) {
-        choice = "paper";
-        console.log("Computer Played "+ choice +".")
-        return choice;
-    }
-    else {
-        choice = "scissors";
-        console.log("Computer Played: "+ choice)
-        return choice;
-    }
-}
-// function play one round 
-function playOneRound(playerSelection, computerSelection){
-    let winner = "Nobody";
-    // if statements to determine a winner
-    if (playerSelection === "rock" && computerSelection === "scissors") {
-        winner = "Player";
-    }
-    else if (playerSelection === "rock" && computerSelection === "paper") {
-        winner = "Computer";
-    }
-    else if (playerSelection === "paper" && computerSelection === "scissors") {
-        winner = "Computer";
-    }
-    else if (playerSelection === "paper" && computerSelection === "rock") {
-        winner = "Player";
-    }
-    else if (playerSelection === "scissors" && computerSelection === "rock") {
-        winner = "Computer";
-    }
-    else if (playerSelection === "scissors" && computerSelection === "paper") {
-        winner = "Player";
-    }
-    else if (playerSelection === computerSelection) {
-        winner = "Draw";
-    }
-    // returning winner of the round
-    return winner;
-}
-// function to validate player turn
-function validatingPlayerTurn(playerChoice) {
-    while (playerChoice !== "paper" && playerChoice !== "rock" && playerChoice !== "scissors") {
-        alert("Oops. Invalid Choice. Tray Again.")
-        playerChoice = prompt("Enter Choice: ").toLowerCase();
-    }
-    console.log("You Played: " + playerChoice);
-    return playerChoice;
-    
-}
- 
+// Complete logic of game inside this function
+const game = () => {
+	let playerScore = 0;
+	let computerScore = 0;
+	let moves = 0;
 
-function playGame (){
-    // initializing variables for the game
-    let playerWins = 0;
-    let computerWins = 0;
-    let draws = 0;
-    let totalWinner = "No One";
-    // for loop to play 5 rounds
-    for(let i = 0; i < 5; i++) {
-        // getting player turn
-        let playerTurn = prompt("Enter Choice: ");
-         // making the player choice all lower case
-        let playerChoice = playerTurn.toLowerCase();
-        // initializing winner then assigning it to the winner of the round
-        let winner = "No One";
-        // playing one round and using the player validation function and get computer choice function as parameters
-        winner = playOneRound(validatingPlayerTurn(playerChoice), getComputerChoice());
-        // adding total wins for player and computer
-        if (winner === "Player") {
-            playerWins += 1;
-        }
-        else if (winner === "Computer") {
-            computerWins += 1;
-        }
-        else {
-            draws += 1;
-        }
-        console.log("Winner for this round: " + winner);
-        console.log("Total Player Wins; " + playerWins);
-        console.log("Total Computer Wins; " + computerWins);
-        console.log("Total Draws: " + draws + "\n\n");
-    }
-    // getting total winner by comparing wins for both player and computer then returning that winner
-    if (playerWins > computerWins) {
-        totalWinner = "Player";
-        console.log("Winner of the Game is: " + totalWinner);
-        return 0;
-    }
-    else if (computerWins > playerWins) {
-        totalWinner = "Computer";
-        console.log("Winner of the Game is: " + totalWinner);
-        return 0;
-    }
-    else {
-        totalWinner = "Draw";
-        console.log("Winner of the Game is: " + totalWinner);
-        return 0;
-    }
+
+	// Function to 
+	const playGame = () => {
+		const rockBtn = document.querySelector('.rock');
+		const paperBtn = document.querySelector('.paper');
+		const scissorBtn = document.querySelector('.scissor');
+		const playerOptions = [rockBtn, paperBtn, scissorBtn];
+		const computerOptions = ['rock', 'paper', 'scissors']
+
+		// Function to start playing game
+		playerOptions.forEach(option => {
+			option.addEventListener('click', function () {
+
+				const movesLeft = document.querySelector('.movesleft');
+				moves++;
+				movesLeft.innerText = `Moves Left: ${10 - moves}`;
+
+
+				const choiceNumber = Math.floor(Math.random() * 3);
+				const computerChoice = computerOptions[choiceNumber];
+
+				// Function to check who wins
+				winner(this.innerText, computerChoice)
+
+				// Calling gameOver function after 10 moves
+				if (moves == 10) {
+					gameOver(playerOptions, movesLeft);
+				}
+			})
+		})
+
+	}
+
+	// Function to decide winner
+	const winner = (player, computer) => {
+		const result = document.querySelector('.result');
+		const playerScoreBoard = document.querySelector('.player-count');
+		const computerScoreBoard = document.querySelector('.computer-count');
+		player = player.toLowerCase();
+		computer = computer.toLowerCase();
+		if (player === computer) {
+			result.textContent = 'Tie'
+		}
+		else if (player == 'rock') {
+			if (computer == 'paper') {
+				result.textContent = 'Computer Won';
+				computerScore++;
+				computerScoreBoard.textContent = computerScore;
+
+			} else {
+				result.textContent = 'Player Won'
+				playerScore++;
+				playerScoreBoard.textContent = playerScore;
+			}
+		}
+		else if (player == 'scissors') {
+			if (computer == 'rock') {
+				result.textContent = 'Computer Won';
+				computerScore++;
+				computerScoreBoard.textContent = computerScore;
+			} else {
+				result.textContent = 'Player Won';
+				playerScore++;
+				playerScoreBoard.textContent = playerScore;
+			}
+		}
+		else if (player == 'paper') {
+			if (computer == 'scissors') {
+				result.textContent = 'Computer Won';
+				computerScore++;
+				computerScoreBoard.textContent = computerScore;
+			} else {
+				result.textContent = 'Player Won';
+				playerScore++;
+				playerScoreBoard.textContent = playerScore;
+			}
+		}
+	}
+
+	// Function to run when game is over
+	const gameOver = (playerOptions, movesLeft) => {
+
+		const chooseMove = document.querySelector('.move');
+		const result = document.querySelector('.result');
+		const reloadBtn = document.querySelector('.reload');
+
+		playerOptions.forEach(option => {
+			option.style.display = 'none';
+		})
+
+
+		chooseMove.innerText = 'Game Over!!'
+		movesLeft.style.display = 'none';
+
+		if (playerScore > computerScore) {
+			result.style.fontSize = '2rem';
+			result.innerText = 'You Won The Game'
+			result.style.color = '#308D46';
+		}
+		else if (playerScore < computerScore) {
+			result.style.fontSize = '2rem';
+			result.innerText = 'You Lost The Game';
+			result.style.color = 'red';
+		}
+		else {
+			result.style.fontSize = '2rem';
+			result.innerText = 'Tie';
+			result.style.color = 'grey'
+		}
+		reloadBtn.innerText = 'Restart';
+		reloadBtn.style.display = 'flex'
+		reloadBtn.addEventListener('click', () => {
+			window.location.reload();
+		})
+	}
+
+
+	// Calling playGame function inside game
+	playGame();
+
 }
 
-// calling playGame method which plays 5 rounds and announces the overall winner
-playGame();
+// Calling the game function
+game();
